@@ -15,7 +15,10 @@ class GiphyClient:
             'lang': language,
             'fmt': format}
 
-    def search(self, query, offset) -> Tuple[int, dict]:
+    def search(self, query, offset=0) -> Tuple[int, dict]:
+        """search the giphy api with the query provided.  For more results of the same query provide the same query
+        string as a previous search with a different offset value.  The offset is the 1 based index of the result you
+        would like the result set to start with."""
         if query:
             resp = self._client.gifs_search_get(self._api_key, query, offset=int(offset), **self._call_configs)
             resp_data = {
@@ -25,6 +28,12 @@ class GiphyClient:
             }
 
             return resp.meta.status, resp_data
+
+    def get_gif_by_giphy_id(self, giphy_id):
+        """retrieve gif information with the giphy_id"""
+        resp = self._client.gifs_gif_id_get(self._api_key, giphy_id)
+
+        return resp.meta.status, resp.data
 
     def _make_pagination(self, pagination: Pagination) -> dict:
         """this will dump the pagination object to dict and add key(s) to the response to make our users lives a
@@ -41,12 +50,3 @@ class GiphyClient:
             dikt['next_page_offset'] = None
 
         return dikt
-
-
-if __name__ == '__main__':
-    from json import dumps
-    gc = GiphyClient(api_key='Biu2IeP8xyBWRbMYFMZ7omHFH8aqRtso')
-
-    status, data = gc.search('clown', 0)
-
-    print(dumps(data['data'][0], indent=4))

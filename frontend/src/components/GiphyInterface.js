@@ -13,7 +13,7 @@ class GiphyInterface extends Component {
     }
 
     getUserFavorites(){
-        fetch('/api/giphy_favorite/')
+        fetch('/api/giphy/favorite/')
             .then(response => response.json()
                 .then(data => ({
                         data: data,

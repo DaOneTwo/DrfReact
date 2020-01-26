@@ -1,4 +1,4 @@
-# DrfReact
+# Drf React
 
 A small site through which I am learning about both the Django Rest
 Framework and React.js
@@ -86,6 +86,10 @@ python manage.py runserver
 9. Open your preferred web browser and access the Application
    [via localhost `http://127.0.0.1:8000/`](http://127.0.0.1:8000/)
 
+10. If you just followed all of the steps above for the first time you
+    will have to "Sign up" by clicking the appropriate link on the log
+    in page.
+
 
 ### Development Notes
 
@@ -97,5 +101,3 @@ python manage.py runserver
 2. For python API changes follow the Django/DRF development processes
    which are well documented online. Commands needed could include all
    the `python xxx` commands given above and then some.
-
-

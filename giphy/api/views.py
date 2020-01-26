@@ -8,8 +8,9 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from giphy.client import GiphyClient
-from giphy.models import GiphyFavorite
-from giphy.api.serializers import GiphyFavoriteSerializer, GiphyFavoriteCreateSerializer
+from giphy.models import GiphyFavorite, GiphyFavoriteCategory
+from giphy.api.serializers import GiphyFavoriteSerializer, GiphyFavoriteCreateSerializer,\
+    GiphyFavoriteCategoryListSerializer, GiphyFavoriteCategoryCreateSerializer
 
 
 def parse_giphy_response(data: List[Dict]) -> List[Dict]:
@@ -55,7 +56,24 @@ class GiphyFavoriteAPIView(APIView):
     def get(self, request):
         favorites = GiphyFavorite.objects.filter(user_id=request.user.id)
         serializer = GiphyFavoriteSerializer(favorites, many=True)
-        return Response(serializer.data)
+        fave_data = serializer.data
+
+        favs = []
+        client = GiphyClient()
+        for fave in fave_data:
+            # pop out the giphy_id key and call the giphy api to insert data required for the gallery objects
+            id = fave.get('giphy_id')
+            favorite_id = fave.get('favorite_id')
+            status, data = client.get_gif_by_giphy_id(id)
+            if status is 200:
+                # returns a list but we only send a list of 1 so we grab it
+                fave['image_data'] = parse_giphy_response([data.to_dict()])[0]
+                cat_serializer = GiphyFavoriteCategoryListSerializer(GiphyFavoriteCategory.objects.filter(
+                    favorite_id=favorite_id), many=True)
+                fave['categories'] = cat_serializer.data
+                favs.append(fave)
+
+        return Response(favs)
 
     def post(self, request):
         request.data['user_id'] = request.user.id
@@ -68,3 +86,18 @@ class GiphyFavoriteAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class GiphyFavoriteCategoryCreateAPIView(APIView):
+    def post(self, request):
+        serializer = GiphyFavoriteCategoryCreateSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request):
+
+        choices = [choice[0] for choice in GiphyFavoriteCategory.CATEGORY_CHOICES]
+
+        return Response(choices)

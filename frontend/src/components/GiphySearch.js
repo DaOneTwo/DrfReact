@@ -36,7 +36,7 @@ class GiphySearch extends Component {
             }
 
             // yup this is hacky for url assembly but making it work for now.
-            let url = '/api/giphy_search/?search=' + this.state.search_value + '&offset=' + this.state.search_position.toString();
+            let url = '/api/giphy/search/?search=' + this.state.search_value + '&offset=' + this.state.search_position.toString();
             fetch(url)
                 .then(response => response.json()
                     .then(data => ({
