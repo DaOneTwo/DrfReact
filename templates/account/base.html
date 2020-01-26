@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <style>
+        .registration-form{
+            text-align: center;
+            padding-top: 3em;
+        }
+        .registration-form label{
+            display: none;
+        }
+    </style>
+    <div class="registration-form col-sm-12 col-md-6 align-center">
+        {% block form_content %}
+        {% endblock %}
+    </div>
+
+{% endblock %}
