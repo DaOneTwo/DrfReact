@@ -668,4 +668,5 @@ dmypy.json
 
 ./.idea
 
-software_engineering_life/frontend/
+drf_react/frontend/
+/package-lock.json
