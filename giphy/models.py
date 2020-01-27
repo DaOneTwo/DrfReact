@@ -26,3 +26,6 @@ class GiphyFavoriteCategory(models.Model):
     fav_cat_id = models.AutoField(primary_key=True)
     favorite_id = models.ForeignKey(to='GiphyFavorite', on_delete=models.CASCADE, null=False, db_column='favorite_id')
     category = models.CharField(null=False, max_length=12, choices=CATEGORY_CHOICES)
+
+    class Meta:
+        unique_together = (('favorite_id', 'category',), )

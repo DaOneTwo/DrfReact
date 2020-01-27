@@ -20,67 +20,30 @@ function getCookie(name) {
     return cookieValue;
 }
 
-class GiphyGallery extends Component {
+class GiphyFavoriteGallery extends Component {
     constructor(props) {
         super(props);
         this.state = {
             current_image: 0,
-            images: props.images,
-            user_favorites:  props.user_favorites,
+            images: [],
+            favorites_data: [],
         };
         this.onCurrentImageChange = this.onCurrentImageChange.bind(this);
         this.saveFavorite = this.saveFavorite.bind(this);
     }
 
     componentWillReceiveProps(props) {
-        this.setState({images: props.images,
-                             user_favorites: props.user_favorites});
-
+        var images = props.favorites_data.map(data => {
+            return data.image_data
+        });
+        this.setState({favorites_data: props.favorites_data,
+                             images: images});
     }
 
     onCurrentImageChange(index) {
         this.setState({ current_image: index });
     }
 
-    saveFavorite(){
-        var csrftoken = getCookie('csrftoken');
-        var image = this.state.images[this.state.current_image];
-        var body = {giphy_id: image.giphyId};
-
-        // this is less than ideal but for now... (figuring out how to make the button a component of its own
-        // would be better)
-        // ... before we try to save the favorite lets make sure it is not already in our favorites just to try and
-        // save some traffic to our API.
-        if (!this.is_user_favorite(image.giphyId)) {
-            fetch('api/giphy_favorite/',
-                {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json, text/plain, */*',
-                        'Content-Type': 'application/json',
-                        'X-CSRFTOKEN': csrftoken,
-                    },
-                    body: JSON.stringify(body)
-                }).then(response => response.json()
-                .then(data => ({
-                        data: data,
-                        status: response.status
-                    })
-                )
-                .then(res => {
-                        if (res.status === 201) {
-                            image.isSelected = true;
-                            this.state.user_favorites.push(image.giphyId);
-                        }
-                    }
-                )
-            )
-        }
-    }
-
-    is_user_favorite(imageId){
-        return (this.state.user_favorites.indexOf(imageId) !== -1);
-    }
 
     render() {
         var images =
@@ -92,7 +55,6 @@ class GiphyGallery extends Component {
                         this.setCustomTags(i)}
                     </div>);
                 i.isSelected = this.is_user_favorite(i.giphyId);
-
                 return i;
             });
 
@@ -104,23 +66,22 @@ class GiphyGallery extends Component {
                 border: "1px solid #ddd",
                 overflow: "auto",}}
             >
-
                 <Gallery
                     images={images}
                     enableImageSelection={false}
-                    enableLightbox={true}
+                    enableLightbox={false}
                     currentImageWillChange={this.onCurrentImageChange}
                     showLightboxThumbnails={true}
-                    customControls={[
-                        <button key="save_button" className="btn btn-primary" onClick={this.saveFavorite}>Save As Favorite</button>
-                    ]}
+                    // customControls={[
+                    //     <button key="save_button" className="btn btn-primary" onClick={this.saveFavorite}>Save As Favorite</button>
+                    // ]}
                 />
             </div>
         );
     }
 }
 
-GiphyGallery.propTypes = {
+GiphySearchGallery.propTypes = {
     images: PropTypes.arrayOf(
         PropTypes.shape({
             src: PropTypes.string.isRequired,
@@ -149,4 +110,4 @@ const captionStyle = {
     fontSize: "90%"
 };
 
-export default GiphyGallery;
+export default GiphySearchGallery;

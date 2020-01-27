@@ -13,7 +13,7 @@ class GiphyFavoriteSerializer(serializers.ModelSerializer):
 class GiphyFavoriteCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = GiphyFavorite
-        fields = ['giphy_id', 'user_id']
+        fields = ['giphy_id', 'user_id', 'favorite_id']
 
 
 class GiphyFavoriteCategoryListSerializer(serializers.ModelSerializer):

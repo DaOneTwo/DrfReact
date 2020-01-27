@@ -85,6 +85,13 @@ class GiphyFavoriteAPIView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def delete(self, request, pk):
+        row = GiphyFavorite.objects.get(pk=pk)
+        row.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 
 class GiphyFavoriteCategoryCreateAPIView(APIView):
     def post(self, request):
@@ -97,7 +104,6 @@ class GiphyFavoriteCategoryCreateAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
-
         choices = [choice[0] for choice in GiphyFavoriteCategory.CATEGORY_CHOICES]
 
         return Response(choices)

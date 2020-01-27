@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 
-import GiphyGallery from "./GiphyGallery";
+import GiphySearchGallery from "./GiphySearchGallery";
 
 
 class GiphySearch extends Component {
@@ -68,14 +68,16 @@ class GiphySearch extends Component {
                     <div className="search-box col-sm-10 col-md-4">
                         <input type="text" value={this.state.search_value} onChange={this.handleChange}/>
                     </div>
-                    <div className="search-button col-sm-2 col-md-2">
+                    <div className="search-button col-sm-2 col-md-4">
                         <button className="btn btn-primary" onClick={this.submitSearch}>Search Giphy</button>
                     </div>
                 </div>
                 <div className="row col-sm-12 pt-4">
-                    <GiphyGallery
+                    <GiphySearchGallery
                         images={this.state.search_results}
                         user_favorites={this.props.user_favorites}
+                        save_favorite={this.props.save_favorite}
+                        delete_favorite={this.props.delete_favorite}
                     />
                 </div>
             </div>
