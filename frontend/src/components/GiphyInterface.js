@@ -44,23 +44,22 @@ class GiphyInterface extends Component {
                         'Accept': 'application/json, text/plain, */*',
                         'Content-Type': 'application/json',
                         'X-CSRFTOKEN': csrftoken,
-                        'cache-control': 'no-cache',
+                        'cache-control': 'no-store',
                         'pragma': 'no-cache',
                     }
-                }).then(response => response.json()
+                }).then(response => response.text()
                     .then(data => ({
-                            data: data,
                             status: response.status
                         })
                     )
                         .then(res => {
                             if (res.status === 204) {
-
+                                this.getUserFavorites();
                             }
                         })
                 );
 
-        this.getUserFavorites();
+
     }
 
     saveFavorite(image){
@@ -75,7 +74,7 @@ class GiphyInterface extends Component {
                         'Accept': 'application/json, text/plain, */*',
                         'Content-Type': 'application/json',
                         'X-CSRFTOKEN': csrftoken,
-                        'cache-control': 'no-cache',
+                        'cache-control': 'no-store',
                         'pragma': 'no-cache',
                     },
                     body: JSON.stringify(body)
@@ -87,19 +86,19 @@ class GiphyInterface extends Component {
                     )
                         .then(res => {
                             if (res.status === 201) {
-
+                                this.getUserFavorites();
                             }
                         })
                 );
 
-        this.getUserFavorites();
+
     }
 
     getUserFavorites(){
         fetch('/api/giphy/favorite/',
             {
                 headers: {
-                    'cache-control': 'no-cache',
+                    'cache-control': 'no-store',
                     'pragma': 'no-cache',
                 }
             })

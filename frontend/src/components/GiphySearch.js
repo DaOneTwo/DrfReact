@@ -10,7 +10,9 @@ class GiphySearch extends Component {
             last_search_value: '',
             search_value: '',
             search_results: [],
-            search_position: 0
+            search_position: 0,
+            user_favorites: props.user_favorites,
+            favorites_data: props.favorites_data
         };
         this.handleChange = this.handleChange.bind(this);
         this.submitSearch = this.submitSearch.bind(this);
@@ -20,9 +22,14 @@ class GiphySearch extends Component {
         this.setState({
             last_search_value: '',
             search_results: [],
-            search_position: 0
+            search_position: 0,
             // not setting search value because it is the key component that is handled with onChange of the input.
         })
+    }
+
+    componentWillReceiveProps(props) {
+        this.setState({user_favorites: props.user_favorites,
+                             favorites_data: props.favorites_data});
     }
 
     handleChange(event) {
@@ -75,7 +82,8 @@ class GiphySearch extends Component {
                 <div className="row col-sm-12 pt-4">
                     <GiphySearchGallery
                         images={this.state.search_results}
-                        user_favorites={this.props.user_favorites}
+                        user_favorites={this.state.user_favorites}
+                        favorites_data={this.state.favorites_data}
                         save_favorite={this.props.save_favorite}
                         delete_favorite={this.props.delete_favorite}
                     />

@@ -13,26 +13,32 @@ class GiphySearchGallery extends Component {
             current_image: 0,
             images: props.images,
             user_favorites:  props.user_favorites,
+            favorites_data: props.favorites_data
         };
         this.onCurrentImageChange = this.onCurrentImageChange.bind(this);
         this.toggleFavorite = this.toggleFavorite.bind(this);
     }
 
     componentWillReceiveProps(props) {
-        this.setState({images: props.images,
-                             user_favorites: props.user_favorites});
+        this.setState({
+            images: props.images,
+            user_favorites: props.user_favorites,
+            favorites_data: props.favorites_data
+        });
     }
 
     onCurrentImageChange(index) {
         this.setState({current_image: index });
     }
 
-    toggleFavorite(){
-        var image = this.state.images[this.state.current_image];
+    toggleFavorite(index){
+        console.log(index);
+        var image = this.state.images[index];
+        var img_id = image.giphyId;
 
-        if (!this.is_user_favorite(image.giphyId)){
-
+        if (!this.is_user_favorite(img_id)){
             this.props.save_favorite(image)
+
         } else {
             this.props.delete_favorite(image)
         }
