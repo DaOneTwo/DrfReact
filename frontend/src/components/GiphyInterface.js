@@ -3,126 +3,45 @@ import GiphySearch from './GiphySearch';
 import GiphyUserFavorites from './GiphyUserFavorites';
 
 
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
 class GiphyInterface extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            user_favorites: [],
-            favorites_data: [],
+            userFavorites: [],
+            favoritesData: [],
         };
-    this.getUserFavorites();
-
     this.saveFavorite = this.saveFavorite.bind(this);
     this.deleteFavorite = this.deleteFavorite.bind(this);
     }
 
+    componentDidMount() {
+        this.getFavorites();
+    }
+
     deleteFavorite(image){
         // delete a user favorite associated with the authenticated user
-        var index = this.state.user_favorites.indexOf(image.giphyId);
-        var csrftoken = getCookie('csrftoken');
-
-        fetch('api/giphy/favorite/'+ this.state.favorites_data[index].favorite_id.toString(),
-                {
-                    method: "DELETE",
-                    headers: {
-                        'Accept': 'application/json, text/plain, */*',
-                        'Content-Type': 'application/json',
-                        'X-CSRFTOKEN': csrftoken,
-                        'cache-control': 'no-store',
-                        'pragma': 'no-cache',
-                    }
-                }).then(response => response.text()
-                    .then(data => ({
-                            status: response.status
-                        })
-                    )
-                        .then(res => {
-                            if (res.status === 204) {
-                                this.getUserFavorites();
-                            }
-                        })
-                );
-
-
+        let index = this.state.userFavorites.indexOf(image.giphyId);
+        let favoriteId = this.state.favoritesData[index].favorite_id.toString();
+        this.props.backendService.deleteUserFavorite(favoriteId);
+        this.getFavorites();
     }
 
     saveFavorite(image){
-        // save a favorite associated with the authenticated user
-        var csrftoken = getCookie('csrftoken');
-        var body = {giphy_id: image.giphyId};
-
-        fetch('api/giphy/favorite/',
-                {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json, text/plain, */*',
-                        'Content-Type': 'application/json',
-                        'X-CSRFTOKEN': csrftoken,
-                        'cache-control': 'no-store',
-                        'pragma': 'no-cache',
-                    },
-                    body: JSON.stringify(body)
-                }).then(response => response.json()
-                    .then(data => ({
-                            data: data,
-                            status: response.status
-                        })
-                    )
-                        .then(res => {
-                            if (res.status === 201) {
-                                this.getUserFavorites();
-                            }
-                        })
-                );
-
-
+        this.props.backendService.saveUserFavorite(image.giphyId);
+        this.getFavorites();
     }
 
-    getUserFavorites(){
-        fetch('/api/giphy/favorite/',
-            {
-                headers: {
-                    'cache-control': 'no-store',
-                    'pragma': 'no-cache',
-                }
-            })
-            .then(response => response.json()
-                .then(data => ({
-                        data: data,
-                        status: response.status
-                    })
-                )
-                .then(res => {
-                    if (res.status === 200) {
-                        let faves = res.data.map(data => {
-                            return data.giphy_id
-                        });
-                        this.setState({
-                            user_favorites: faves,
-                            favorites_data: res.data
-                        });
-
-                    }
+    getFavorites(){
+        this.props.backendService.getUserFavorites()
+            .then(response => {
+                let faveData = response;
+                let faves = faveData.map(data => {return data.giphy_id});
+                this.setState({
+                    userFavorites: faves,
+                    favoritesData: faveData
                 })
-            );
+            });
     }
-
 
     render() {
         return (
@@ -130,17 +49,17 @@ class GiphyInterface extends Component {
                 <div className="col-md-6">
                     Your Favorites
                     <GiphyUserFavorites
-                        favorites_data={this.state.favorites_data}
-                        save_favorite={this.saveFavorite}
-                        delete_favorite={this.deleteFavorite}
+                        favoritesData={this.state.favoritesData}
+                        saveFavorite={this.saveFavorite}
+                        deleteFavorite={this.deleteFavorite}
                     />
                 </div>
                 <div className="col-md-6">
                     Search Giphy
                     <GiphySearch
-                        user_favorites={this.state.user_favorites}
-                        save_favorite={this.saveFavorite}
-                        delete_favorite={this.deleteFavorite}
+                        userFavorites={this.state.userFavorites}
+                        saveFavorite={this.saveFavorite}
+                        deleteFavorite={this.deleteFavorite}
                     />
                 </div>
             </div>

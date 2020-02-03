@@ -2,50 +2,44 @@ import React, {Component} from "react";
 import ReactDOM from "react-dom";
 
 import GiphyInterface from "./GiphyInterface"
-
-
-
+import backendService from "../data_providers/backend";
 
 
 class App extends Component {
     constructor(props) {
         super(props);
+        this.apiService = new backendService();
         this.state = {
             loaded: false,
-            user_data: null,
+            userData: null,
+            show_modal: false,
         };
-        if (!this.state.user_data) {
-            this.getUserData();
-        }
     };
 
-    getUserData() {
-        fetch('/api/user/')
-            .then(response => response.json()
-                .then(data => ({
-                        data: data,
-                        status: response.status
-                    })
-                )
-                .then(res => {
-                    if (res.status === 200) {
-                        this.setState({loaded: true, user_data: res.data});
-                    }
-                })
-            );
-    };
+    componentDidMount() {
+        if (!this.state.userData) {
+            this.loadUserData();
+        }
+    }
+
+    loadUserData() {
+       this.apiService.getUserData()
+           .then(response => {
+                this.setState({loaded: true, userData: response});
+            });
+    }
 
     render() {
-        if (this.state.user_data) {
-
+        if (this.state.userData) {
             return (
                 <div className="profile-page">
                     <div className="profile_header row col-sm-12 pt-2">
-                        <h3>Welcome {this.state.user_data.username}</h3>
+                        <h3>Welcome {this.state.userData.username}</h3>
                     </div>
                     <div className="row col-sm-12">
                         <GiphyInterface
-                            user_data={this.state.user_data}
+                            userData={this.state.userData}
+                            backendService={this.apiService}
                         />
                     </div>
                 </div>

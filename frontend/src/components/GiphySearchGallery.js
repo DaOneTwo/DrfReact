@@ -10,10 +10,10 @@ class GiphySearchGallery extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            current_image: 0,
+            currentImage: 0,
             images: props.images,
-            user_favorites:  props.user_favorites,
-            favorites_data: props.favorites_data
+            userFavorites:  props.userFavorites,
+            favoritesData: props.favoritesData
         };
         this.onCurrentImageChange = this.onCurrentImageChange.bind(this);
         this.toggleFavorite = this.toggleFavorite.bind(this);
@@ -22,13 +22,13 @@ class GiphySearchGallery extends Component {
     componentWillReceiveProps(props) {
         this.setState({
             images: props.images,
-            user_favorites: props.user_favorites,
-            favorites_data: props.favorites_data
+            userFavorites: props.userFavorites,
+            favoritesData: props.favoritesData
         });
     }
 
     onCurrentImageChange(index) {
-        this.setState({current_image: index });
+        this.setState({currentImage: index });
     }
 
     toggleFavorite(index){
@@ -37,30 +37,30 @@ class GiphySearchGallery extends Component {
         var img_id = image.giphyId;
 
         if (!this.is_user_favorite(img_id)){
-            this.props.save_favorite(image)
+            this.props.saveFavorite(image)
 
         } else {
-            this.props.delete_favorite(image)
+            this.props.deleteFavorite(image)
         }
     }
 
     is_user_favorite(imageId){
-        return (this.state.user_favorites.indexOf(imageId) !== -1);
+        return (this.state.userFavorites.indexOf(imageId) !== -1);
     }
 
     render() {
         var images =
             this.state.images.map((i) => {
-                var is_fav = this.is_user_favorite(i.giphyId);
+                var isFav = this.is_user_favorite(i.giphyId);
                 i.customOverlay = (
                     <div style={captionStyle}>
                         <GiphyFavoriteButton
-                            is_favorite={is_fav}
+                            isFavorite={isFav}
                         />
 
                     </div>
                 );
-                i.isSelected = is_fav;
+                i.isSelected = isFav;
                 return i;
             });
 

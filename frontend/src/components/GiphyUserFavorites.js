@@ -61,18 +61,18 @@ class GiphyUserFavorites extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            favorites_data: [],
+            favoritesData: [],
             images: [],
             open_modal: true,
         }
     }
 
     componentWillReceiveProps(props) {
-        var images = props.favorites_data.map(data => {
+        var images = props.favoritesData.map(data => {
             return data.image_data
         });
         this.setState({
-            favorites_data: props.favorites_data,
+            favoritesData: props.favoritesData,
             images: images
         });
     }
@@ -80,7 +80,7 @@ class GiphyUserFavorites extends Component {
     renderPopup(index) {
         alert('here is where we will allow things like categorization and deletion of the favorite row.  ' +
             'Currently trying to figure out modals');
-        // ReactDOM.render(<ControlledPopup/>, document.getElementById('modal'))
+        // ReactDOM.createPortal(<div><h1>Dingleberry Here</h1></div>, app);
     }
 
     render() {
@@ -99,7 +99,7 @@ class GiphyUserFavorites extends Component {
                             images={this.state.images}
                             enableImageSelection={true}
                             enableLightbox={false}
-                            // onSelectImage={this.renderPopup}
+                            onSelectImage={this.renderPopup}
                         />
 
                     </div>
