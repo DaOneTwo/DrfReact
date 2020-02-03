@@ -55,7 +55,6 @@ class GiphyFavoriteGallery extends Component {
                     enableImageSelection={false}
                     enableLightbox={false}
                     currentImageWillChange={this.onCurrentImageChange}
-                    showLightboxThumbnails={true}
                     // customControls={[
                     //     <button key="save_button" className="btn btn-primary" onClick={this.saveFavorite}>Save As Favorite</button>
                     // ]}

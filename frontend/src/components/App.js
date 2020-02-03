@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import ReactDOM from "react-dom";
 
 import GiphyInterface from "./GiphyInterface"
-import backendService from "../loaders/backend";
+import backendService from "../data_providers/backend";
 
 
 class App extends Component {

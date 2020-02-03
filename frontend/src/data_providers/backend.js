@@ -1,5 +1,5 @@
 /**
- * Wrapper around the fetch API built out for communications with the sites Backend API service.
+ * Wrapper around the fetch API built out for communications with the sites primary Backend API service.
  */
 class backendService {
     constructor() {
